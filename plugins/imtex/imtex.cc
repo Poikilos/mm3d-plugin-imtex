@@ -1,11 +1,15 @@
 #include "imtex.h"
 
-#include "config.h"
+#include "mm3dconfig.h"
 #include "log.h"
 #include "texmgr.h"
 
 #include <X11/Xlib.h>
 #include <Imlib2.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include <string>
 
 // See below for plugin functions
@@ -208,7 +212,7 @@ list<string> ImlibTextureFilter::getWriteTypes()
    return rval;
 }
 
-// This ifdef is present in case someone wants to compile the filter statically
+// This ifdef is present in case someone wants to link the filter statically
 // to Misfit Model 3D (or another program that uses the TextureFilterManager)
 //
 // If your plugin will always behave as a plugin, you don't need to worry about
@@ -229,7 +233,7 @@ extern "C" bool plugin_init()
       TextureManager * texmgr = TextureManager::getInstance();
       texmgr->registerTextureFilter( s_filter );
    }
-   log_debug( "ImLib2 texture filture plugin initialized\n" );
+   log_debug( "ImLib2 texture filter plugin initialized\n" );
    return true;
 }
 
@@ -238,18 +242,18 @@ extern "C" bool plugin_init()
 extern "C" bool plugin_uninit()
 {
    s_filter = NULL; // TextureManager deletes filters
-   log_debug( "ImLib2 texture filture plugin uninitialized\n" );
+   log_debug( "ImLib2 texture filter plugin uninitialized\n" );
    return true;
 }
 
 extern "C" const char * plugin_version()
 {
-   return "0.9.0";
+   return "1.0.0";
 }
 
 extern "C" const char * plugin_desc()
 {
-   return "ImLib2 texture filture";
+   return "ImLib2 texture filter";
 }
 
 #endif // PLUGIN

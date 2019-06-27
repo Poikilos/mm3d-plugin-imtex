@@ -2,7 +2,7 @@ PLUGINS =  \
 			  imtex.so \
 
 LFLAGS = -O2 -Wall -lImlib2
-CFLAGS = -O2 -Wall -I../../src -DPLUGIN
+CFLAGS = -O2 -Wall -I../../src -I../.. -DPLUGIN
 
 all: ${PLUGINS}
 	
