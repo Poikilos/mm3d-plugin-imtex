@@ -89,7 +89,7 @@ class ImlibTextureFilter : public TextureFilter
       std::list< std::string > getWriteTypes();
 
       // Function to read contents of file and initialize texture object
-      Texture::Error readFile( Texture * texture, const char * filename );
+      Texture::ErrorE readFile( Texture * texture, const char * filename );
 
       // Indicate if we can read 'filename'
       bool canRead( const char * filename );

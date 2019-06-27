@@ -68,7 +68,7 @@ bool ImlibTextureFilter::canRead( const char * filename )
    return false;
 }
 
-Texture::Error ImlibTextureFilter::readFile( Texture * texture, const char * filename )
+Texture::ErrorE ImlibTextureFilter::readFile( Texture * texture, const char * filename )
 {
    Imlib_Image image;
    Imlib_Load_Error imError;
@@ -264,7 +264,7 @@ PLUGIN_API const char * plugin_mm3d_version()
 
 PLUGIN_API const char * plugin_version()
 {
-   return "1.2.0";
+   return "1.4.0";
 }
 
 PLUGIN_API const char * plugin_desc()
