@@ -3,6 +3,8 @@
 #include "mm3dconfig.h"
 #include "log.h"
 #include "texmgr.h"
+#include "pluginapi.h"
+#include "version.h"
 
 #include <X11/Xlib.h>
 #include <Imlib2.h>
@@ -21,8 +23,6 @@ using std::string;
 // ImLib2 Texture Filter implementation
 //------------------------------------------------------------------
 
-static ImlibTextureFilter * s_filter = NULL;
-
 ImlibTextureFilter::ImlibTextureFilter()
 {
    m_read.push_back( "GIF" );
@@ -33,6 +33,11 @@ ImlibTextureFilter::ImlibTextureFilter()
 
 ImlibTextureFilter::~ImlibTextureFilter()
 {
+}
+
+void ImlibTextureFilter::release()
+{
+   delete this;
 }
 
 bool ImlibTextureFilter::canRead( const char * filename )
@@ -174,7 +179,7 @@ Texture::Error ImlibTextureFilter::readFile( Texture * texture, const char * fil
          case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
             return Texture::ERROR_BAD_MAGIC;
          case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-            return Texture::ERROR_ACCESS_DENIED;
+            return Texture::ERROR_NO_ACCESS;
          case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
             return Texture::ERROR_UNSUPPORTED_VERSION;
          default:
@@ -221,11 +226,17 @@ list<string> ImlibTextureFilter::getWriteTypes()
 #ifdef PLUGIN
 
 //------------------------------------------------------------------
+// Plugin private data
+//------------------------------------------------------------------
+
+static ImlibTextureFilter * s_filter = NULL;
+
+//------------------------------------------------------------------
 // Plugin functions
 //------------------------------------------------------------------
 
 // Create a texture filter object and register it with the texture manager
-extern "C" bool plugin_init()
+PLUGIN_API bool plugin_init()
 {
    if ( s_filter == NULL )
    {
@@ -239,19 +250,24 @@ extern "C" bool plugin_init()
 
 // The texture manager will delete our registered filter.
 // We have no other cleanup to do
-extern "C" bool plugin_uninit()
+PLUGIN_API bool plugin_uninit()
 {
-   s_filter = NULL; // TextureManager deletes filters
+   s_filter = NULL; // TextureManager calls release to delete filter
    log_debug( "ImLib2 texture filter plugin uninitialized\n" );
    return true;
 }
 
-extern "C" const char * plugin_version()
+PLUGIN_API const char * plugin_mm3d_version()
 {
-   return "1.0.0";
+   return VERSION_STRING;
 }
 
-extern "C" const char * plugin_desc()
+PLUGIN_API const char * plugin_version()
+{
+   return "1.1.1";
+}
+
+PLUGIN_API const char * plugin_desc()
 {
    return "ImLib2 texture filter";
 }

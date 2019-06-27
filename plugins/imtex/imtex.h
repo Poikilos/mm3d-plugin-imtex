@@ -14,9 +14,9 @@
 // object and registers that object with the appropriate manager when
 // it is initialized (or registers an object creation function).
 //
-// The plugin must implement four functions:
+// The plugin must implement five functions:
 //
-//    extern "C" bool plugin_init()
+//    PLUGIN_API bool plugin_init()
 //       Responsible for initializing the plugin.  Usually it creates
 //       a filter or command object and registers it with the
 //       appropraite manager class
@@ -25,19 +25,26 @@
 //       returns false, the plugin initialization is assumed to have
 //       failed and plugin_uninit() will never be called.
 //
-//    extern "C" bool plugin_uninit()
+//    PLUGIN_API bool plugin_uninit()
 //       Responsible for cleanup.  The plugin does not need to
 //       delete any registered objects.  This function is necessary
 //       to perform any additional cleanup required.
 //
 //       Should return true if properly shut down
 //
-//    extern "C" const char * plugin_version()
+//    PLUGIN_API const char * plugin_version()
 //       Returns a string with the plugin version number
 //       Plugins generally have a major number, minor number, and
 //       patch number (for example, "1.2.0")
 //
-//    extern "C" const char * plugin_desc()
+//    PLUGIN_API const char * plugin_mm3d_version()
+//       Returns a string that indicates the mm3d version
+//       the plugin was compiled for.  The format is 
+//       "[MAJOR].[MINOR].[PATCH]"
+//       You should just be able to include version.h and return
+//       the VERSION constant.
+//
+//    PLUGIN_API const char * plugin_desc()
 //       Returns a string that descibes what the plugin does
 //
 // For more information about impelementing specific plugin types see the 
@@ -70,6 +77,10 @@ class ImlibTextureFilter : public TextureFilter
       virtual ~ImlibTextureFilter();
       
       // TextureFilter functions that we must implement
+
+      // Since we're a plugin we need to delete the filter
+      // we created, so we have to override release()
+      void release();
 
       // List of image types we can read (extensions)
       std::list< std::string > getReadTypes();
