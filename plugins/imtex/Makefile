@@ -2,7 +2,7 @@ PLUGINS =  \
 			  imtex.so \
 
 LFLAGS = -O2 -Wall -lImlib2
-CFLAGS = -O2 -Wall -I../../src -I../.. -DPLUGIN
+CFLAGS = -O2 -Wall -DMM3D_EDIT -I../../src -I../../src/libmm3d -I../.. -DPLUGIN
 
 all: ${PLUGINS}
 	
